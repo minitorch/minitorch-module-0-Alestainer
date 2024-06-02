@@ -1,5 +1,6 @@
 colorama==0.4.3
 hypothesis == 6.54
+isort == 5.13.2
 mypy == 0.971
 numba == 0.55
 numpy == 1.21
