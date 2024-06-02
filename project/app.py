@@ -1,9 +1,9 @@
 from argparse import ArgumentParser
 
 import streamlit as st
-from interface.streamlit_utils import get_img_tag
-from interface.train import render_train_interface
 from math_interface import render_math_sandbox
+from project.interface.streamlit_utils import get_img_tag
+from project.interface.train import render_train_interface
 from run_torch import TorchTrain
 
 parser = ArgumentParser()

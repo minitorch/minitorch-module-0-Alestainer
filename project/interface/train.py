@@ -1,11 +1,11 @@
 import time
 
 import graph_builder
-import interface.plots as plots
 import networkx as nx
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from interface import plots
 
 import minitorch
 

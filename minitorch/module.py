@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 
 class Module:
@@ -25,35 +25,51 @@ class Module:
         self.training = True
 
     def modules(self) -> Sequence[Module]:
-        "Return the direct child modules of this module."
+        """Return the direct child modules of this module."""
         m: Dict[str, Module] = self.__dict__["_modules"]
         return list(m.values())
 
     def train(self) -> None:
-        "Set the mode of this module and all descendent modules to `train`."
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        """Set the mode of this module and all descendant modules to `train`."""
+        stack = [self]
+        while stack:
+            current = stack.pop()
+            stack.extend(current._modules.values())
+            current.training = True
 
     def eval(self) -> None:
-        "Set the mode of this module and all descendent modules to `eval`."
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        """Set the mode of this module and all descendant modules to `eval`."""
+        stack = [self]
+        while stack:
+            current = stack.pop()
+            stack.extend(current._modules.values())
+            current.training = False
 
-    def named_parameters(self) -> Sequence[Tuple[str, Parameter]]:
+    def named_parameters(self) -> List[Tuple[str, Parameter]]:
         """
-        Collect all the parameters of this module and its descendents.
+        Collect all the parameters of this module and its descendants.
 
 
         Returns:
             The name and `Parameter` of each ancestor parameter.
         """
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        output: List[Tuple[str, Parameter]] = []
+        stack = [self]
+        while stack:
+            current = stack.pop()
+            stack.extend(current._modules.values())
+            output.extend(list(current._parameters.items()))
+        return output
 
     def parameters(self) -> Sequence[Parameter]:
-        "Enumerate over all the parameters of this module and its descendents."
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        """Enumerate over all the parameters of this module and its descendants."""
+        output: List[Parameter] = []
+        stack = [self]
+        while stack:
+            current = stack.pop()
+            stack.extend(current._modules.values())
+            output.extend(current._parameters.values())
+        return output
 
     def add_parameter(self, k: str, v: Any) -> Parameter:
         """
@@ -134,7 +150,7 @@ class Parameter:
                 self.value.name = self.name
 
     def update(self, x: Any) -> None:
-        "Update the parameter value."
+        """Update the parameter value."""
         self.value = x
         if hasattr(x, "requires_grad_"):
             self.value.requires_grad_(True)
